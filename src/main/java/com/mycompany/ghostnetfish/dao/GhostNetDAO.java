@@ -12,5 +12,8 @@ public interface GhostNetDAO {
     GhostNet findById(int id);
     List<GhostNet> findAll();
     List<GhostNet> findByStatus(GhostNet.Status status);
+    
+    // Find ghost nets where the status is NOT a specific value (for this case, not RECOVERED)
+    List<GhostNet> findByStatusNot(GhostNet.Status status);
 }
 

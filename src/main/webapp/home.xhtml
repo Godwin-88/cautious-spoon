@@ -16,6 +16,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit t
         <!-- Show different buttons based on the user role -->
         <h:commandButton value="Report Ghost Net" action="reportGhostNet?faces-redirect=true" rendered="#{loginBean.isReporter()}" />
         <h:commandButton value="Recover Ghost Net" action="recoverGhostNet?faces-redirect=true" rendered="#{loginBean.isRecoverer()}" />
+        <h:commandButton value="View Ghost Nets Needing Recovery" action="ghostNetsNeedingRecovery?faces-redirect=true" rendered="#{loginBean.isRecoverer()}" />
+        <h:commandButton value="Mark Ghost Net as Recovered" action="markGhostNetAsRecovered?faces-redirect=true" rendered="#{loginBean.isRecoverer()}" />
+        <h:commandButton value="View Unrecovered Ghost Nets on Map" action="unrecoveredGhostNetsMap?faces-redirect=true" />
 
         <!-- Logout button -->
         <h:commandButton value="Logout" action="#{loginBean.logout}" />

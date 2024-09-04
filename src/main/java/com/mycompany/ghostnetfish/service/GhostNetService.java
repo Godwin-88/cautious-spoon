@@ -7,6 +7,7 @@ package com.mycompany.ghostnetfish.service;
 import com.mycompany.ghostnetfish.dao.GhostNetDAO;
 import com.mycompany.ghostnetfish.model.GhostNet;
 import com.mycompany.ghostnetfish.model.User;
+
 import java.util.List;
 
 public class GhostNetService {
@@ -19,27 +20,43 @@ public class GhostNetService {
     }
 
     // Register a new ghost net
-    public void reportGhostNet(String location, float estimatedSize, GhostNet.Status status, User reporter) {
-    // Validate ghost net details (basic example)
-    if (location == null || location.isEmpty()) {
-        throw new IllegalArgumentException("Location cannot be null or empty");
+    public void reportGhostNet(String location, float estimatedSize, GhostNet.Status status, User reporter, double latitude, double longitude) {
+        // Validate ghost net details (basic validation)
+        if (location == null || location.isEmpty()) {
+            throw new IllegalArgumentException("Location cannot be null or empty");
+        }
+
+        if (estimatedSize <= 0) {
+            throw new IllegalArgumentException("Estimated size must be greater than 0");
+        }
+
+        if (status == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+
+        // Create a new GhostNet object with latitude and longitude
+        GhostNet ghostNet = new GhostNet(location, estimatedSize, status, reporter, latitude, longitude);
+
+        // Save the ghost net to the database
+        ghostNetDAO.save(ghostNet);
     }
 
-    if (estimatedSize <= 0) {
-        throw new IllegalArgumentException("Estimated size must be greater than 0");
+    // Update ghost net status to recovered and assign the recoverer
+    public void markGhostNetAsRecovered(int ghostNetId, User recoverer) {
+        GhostNet ghostNet = ghostNetDAO.findById(ghostNetId);
+
+        // Validate ghost net
+        if (ghostNet == null) {
+            throw new IllegalArgumentException("Ghost net not found with ID: " + ghostNetId);
+        }
+
+        // Update status to RECOVERED and assign the recoverer
+        ghostNet.setStatus(GhostNet.Status.RECOVERED);
+        ghostNet.setRecoverer(recoverer);
+
+        // Save the changes
+        ghostNetDAO.save(ghostNet);
     }
-
-    if (status == null) {
-        throw new IllegalArgumentException("Status cannot be null");
-    }
-
-    // Create a new GhostNet object
-    GhostNet ghostNet = new GhostNet(location, estimatedSize, status, reporter, null);
-
-    // Save the ghost net to the database
-    ghostNetDAO.save(ghostNet);
-}
-
 
     // Find a ghost net by ID
     public GhostNet getGhostNetById(int id) {
@@ -48,7 +65,14 @@ public class GhostNetService {
             throw new IllegalArgumentException("ID must be greater than 0");
         }
 
-        return ghostNetDAO.findById(id);
+        GhostNet ghostNet = ghostNetDAO.findById(id);
+
+        // Handle the case where the ghost net is not found
+        if (ghostNet == null) {
+            throw new IllegalArgumentException("Ghost net not found with ID: " + id);
+        }
+
+        return ghostNet;
     }
 
     // Get all ghost nets
@@ -67,20 +91,33 @@ public class GhostNetService {
     }
 
     // Update a ghost net's status and recoverer
-    public void updateGhostNet(int id, GhostNet.Status status, User recoverer) {
-    GhostNet ghostNet = ghostNetDAO.findById(id);
+    public void updateGhostNet(int id, GhostNet.Status status, User recoverer, double latitude, double longitude) {
+        GhostNet ghostNet = ghostNetDAO.findById(id);
 
-    if (status != null) {
-        ghostNet.setStatus(status);
+        if (ghostNet == null) {
+            throw new IllegalArgumentException("Ghost net not found with ID: " + id);
+        }
+
+        if (status != null) {
+            ghostNet.setStatus(status);
+        }
+
+        if (recoverer != null) {
+            ghostNet.setRecoverer(recoverer);
+        }
+
+        if (latitude != 0 && longitude != 0) {
+            ghostNet.setLatitude(latitude);
+            ghostNet.setLongitude(longitude);
+        }
+
+        ghostNetDAO.save(ghostNet);
     }
 
-    if (recoverer != null) {
-        ghostNet.setRecoverer(recoverer);
+    // Method to get ghost nets that need recovery (i.e., not in RECOVERED status)
+    public List<GhostNet> getGhostNetsNeedingRecovery() {
+        return ghostNetDAO.findByStatusNot(GhostNet.Status.RECOVERED);
     }
 
-    ghostNetDAO.save(ghostNet);
-}
-
-
-    // Additional business logic methods can be added here
+    // Additional business logic methods can be added here as needed
 }

@@ -17,40 +17,42 @@ import java.util.List;
 @RequestScoped
 public class GhostNetRecoveryBean {
 
-    private int selectedGhostNetId;
     private GhostNetService ghostNetService;
-    private List<GhostNet> availableGhostNets;
+    private List<GhostNet> ghostNetsNeedingRecovery;
+    private int selectedGhostNetId;  // ID of the ghost net selected for recovery
 
     public GhostNetRecoveryBean() {
-        // Constructor - GhostNetService would typically be injected
-        availableGhostNets = ghostNetService.getAllGhostNets();  // Load all ghost nets
+        // Initialize the ghost nets needing recovery (you would inject ghostNetService here)
+        ghostNetsNeedingRecovery = ghostNetService.getGhostNetsNeedingRecovery();
     }
 
-    // Recover a ghost net
-    public String recoverGhostNet() {
+    // Mark the selected ghost net as recovered
+    public String markAsRecovered() {
         try {
-            // Get the logged-in user (recoverer)
+            // Get the logged-in recoverer
             User recoverer = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInUser");
 
+            // Ensure the user is a recoverer
             if (recoverer != null && recoverer.getRole() == User.Role.RECOVERER) {
-                // Retrieve the selected ghost net
-                GhostNet ghostNet = ghostNetService.getGhostNetById(selectedGhostNetId);
-
-                // Mark the ghost net as recovered and assign the recoverer
-                ghostNetService.updateGhostNet(ghostNet.getId(), GhostNet.Status.RECOVERED, recoverer);
+                // Mark the selected ghost net as recovered
+                ghostNetService.markGhostNetAsRecovered(selectedGhostNetId, recoverer);
 
                 return "recoverySuccess?faces-redirect=true";  // Redirect to success page
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("You must be a recoverer to recover ghost nets."));
+                FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("You must be a recoverer to mark ghost nets as recovered."));
                 return null;
             }
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Error during recovery: " + e.getMessage()));
+            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Error while recovering ghost net: " + e.getMessage()));
             return null;
         }
     }
 
     // Getters and Setters
+    public List<GhostNet> getGhostNetsNeedingRecovery() {
+        return ghostNetsNeedingRecovery;
+    }
+
     public int getSelectedGhostNetId() {
         return selectedGhostNetId;
     }
@@ -58,9 +60,4 @@ public class GhostNetRecoveryBean {
     public void setSelectedGhostNetId(int selectedGhostNetId) {
         this.selectedGhostNetId = selectedGhostNetId;
     }
-
-    public List<GhostNet> getAvailableGhostNets() {
-        return availableGhostNets;
-    }
 }
-

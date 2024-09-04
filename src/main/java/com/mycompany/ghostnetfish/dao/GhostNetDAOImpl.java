@@ -37,4 +37,14 @@ public class GhostNetDAOImpl implements GhostNetDAO {
                  .setParameter("status", status)
                  .getResultList();
     }
+
+    // Implementation of the missing findByStatusNot method
+    @Override
+    public List<GhostNet> findByStatusNot(GhostNet.Status status) {
+        return em.createQuery("SELECT g FROM GhostNet g WHERE g.status != :status", GhostNet.class)
+                 .setParameter("status", status)
+                 .getResultList();
+    }
 }
+
+

@@ -4,31 +4,26 @@
  */
 package com.mycompany.ghostnetfish.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
-@Table(name = "GhostNets")
 public class GhostNet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String location;
-
     private float estimatedSize;
-
-    @Enumerated(EnumType.STRING)
     private Status status;
-
+    
     @ManyToOne
-    @JoinColumn(name = "reporter_id")
-    private User reporter;
-
-    @ManyToOne
-    @JoinColumn(name = "recoverer_id")
     private User recoverer;
 
+    private double latitude;  // Latitude for map
+    private double longitude; // Longitude for map
+
+    // Enum to define the status of the ghost net
     public enum Status {
         REPORTED,
         RESCUE_IMMINENT,
@@ -36,18 +31,22 @@ public class GhostNet {
         RECOVERED
     }
 
-    // Constructors
-    public GhostNet() {}
+    // Default constructor
+    public GhostNet() {
+    }
 
-    public GhostNet(String location, float estimatedSize, Status status, User reporter, User recoverer) {
+    // Constructor with all fields
+    public GhostNet(String location, float estimatedSize, Status status, User recoverer, double latitude, double longitude) {
         this.location = location;
         this.estimatedSize = estimatedSize;
         this.status = status;
-        this.reporter = reporter;
         this.recoverer = recoverer;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     // Getters and Setters
+
     public int getId() {
         return id;
     }
@@ -80,19 +79,41 @@ public class GhostNet {
         this.status = status;
     }
 
-    public User getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(User reporter) {
-        this.reporter = reporter;
-    }
-
     public User getRecoverer() {
         return recoverer;
     }
 
     public void setRecoverer(User recoverer) {
         this.recoverer = recoverer;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    // ToString method for debugging purposes
+    @Override
+    public String toString() {
+        return "GhostNet{" +
+                "id=" + id +
+                ", location='" + location + '\'' +
+                ", estimatedSize=" + estimatedSize +
+                ", status=" + status +
+                ", recoverer=" + (recoverer != null ? recoverer.getName() : "None") +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                '}';
     }
 }

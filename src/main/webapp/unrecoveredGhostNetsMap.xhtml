@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Unrecovered Ghost Nets on Map</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #mapid { height: 600px; }  /* Set the height of the map */
+    </style>
+</h:head>
+<h:body>
+    <h:form>
+        <h:outputLabel value="Ghost Nets Needing Recovery on World Map:" />
+        <div id="mapid"></div>  <!-- Map container -->
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script type="text/javascript">
+            var map = L.map('mapid').setView([20, 0], 2);  // Initialize the map (centered globally)
+
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Add ghost nets to the map
+            var ghostNets = #{unrecoveredGhostNetsBean.unrecoveredGhostNets};  // Retrieve ghost nets from the managed bean
+
+            ghostNets.forEach(function(ghostNet) {
+                // Create a marker for each ghost net
+                L.marker([ghostNet.latitude, ghostNet.longitude])
+                    .addTo(map)
+                    .bindPopup("<b>Location:</b> " + ghostNet.location + "<br><b>Status:</b> " + ghostNet.status);
+            });
+        </script>
+    </h:form>
+</h:body>
+</html>
