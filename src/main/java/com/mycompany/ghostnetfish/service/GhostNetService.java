@@ -20,29 +20,26 @@ public class GhostNetService {
 
     // Register a new ghost net
     public void reportGhostNet(String location, float estimatedSize, GhostNet.Status status, User reporter) {
-        // Validate ghost net details (basic example)
-        if (location == null || location.isEmpty()) {
-            throw new IllegalArgumentException("Location cannot be null or empty");
-        }
-
-        if (estimatedSize <= 0) {
-            throw new IllegalArgumentException("Estimated size must be greater than 0");
-        }
-
-        if (status == null) {
-            throw new IllegalArgumentException("Status cannot be null");
-        }
-
-        if (reporter == null) {
-            throw new IllegalArgumentException("Reporter cannot be null");
-        }
-
-        // Create a new GhostNet object
-        GhostNet ghostNet = new GhostNet(location, estimatedSize, status, reporter, null);
-
-        // Save the ghost net to the database
-        ghostNetDAO.save(ghostNet);
+    // Validate ghost net details (basic example)
+    if (location == null || location.isEmpty()) {
+        throw new IllegalArgumentException("Location cannot be null or empty");
     }
+
+    if (estimatedSize <= 0) {
+        throw new IllegalArgumentException("Estimated size must be greater than 0");
+    }
+
+    if (status == null) {
+        throw new IllegalArgumentException("Status cannot be null");
+    }
+
+    // Create a new GhostNet object
+    GhostNet ghostNet = new GhostNet(location, estimatedSize, status, reporter, null);
+
+    // Save the ghost net to the database
+    ghostNetDAO.save(ghostNet);
+}
+
 
     // Find a ghost net by ID
     public GhostNet getGhostNetById(int id) {

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/XHtml.xhtml to edit this template
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Report Ghost Net (Anonymous)</title>
+</h:head>
+<h:body>
+    <h:form>
+        <h:panelGrid columns="2">
+            <h:outputLabel for="location" value="Location:" />
+            <h:inputText id="location" value="#{ghostNetAnonymousBean.location}" required="true" />
+
+            <h:outputLabel for="size" value="Estimated Size:" />
+            <h:inputText id="size" value="#{ghostNetAnonymousBean.estimatedSize}" required="true" />
+
+            <h:outputLabel for="status" value="Status:" />
+            <h:selectOneMenu id="status" value="#{ghostNetAnonymousBean.status}" required="true">
+                <f:selectItem itemValue="REPORTED" itemLabel="Reported" />
+                <f:selectItem itemValue="RESCUE_IMMINENT" itemLabel="Rescue Imminent" />
+                <f:selectItem itemValue="MISSING" itemLabel="Missing" />
+                <f:selectItem itemValue="RECOVERED" itemLabel="Recovered" />
+            </h:selectOneMenu>
+
+            <h:commandButton value="Submit" action="#{ghostNetAnonymousBean.reportAnonymousGhostNet}" />
+        </h:panelGrid>
+    </h:form>
+</h:body>
+</html>

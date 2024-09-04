@@ -41,7 +41,18 @@
         <artifactId>hibernate-entitymanager</artifactId>
         <version>5.6.15.Final</version>
     </dependency>
+<!-- JSF (Jakarta Faces) API -->
+    <dependency>
+        <groupId>jakarta.faces</groupId>
+        <artifactId>jakarta.faces-api</artifactId>
+        <version>3.0.0</version>
+    </dependency>
 
+    <dependency>
+        <groupId>org.glassfish</groupId>
+        <artifactId>jakarta.faces</artifactId>
+        <version>3.0.0</version>
+    </dependency>
     <!-- JUnit for Testing -->
     <dependency>
         <groupId>junit</groupId>
