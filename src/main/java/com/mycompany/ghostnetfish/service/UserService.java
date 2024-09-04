@@ -6,20 +6,29 @@ package com.mycompany.ghostnetfish.service;
 
 import com.mycompany.ghostnetfish.dao.UserDAO;
 import com.mycompany.ghostnetfish.model.User;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+
 import java.util.List;
 
 public class UserService {
 
-    private UserDAO userDAO;
+    @Inject
+    private UserDAO userDAO;  // CDI will inject the UserDAO implementation
 
-    // Constructor injection of UserDAO
+    // Default constructor required by CDI
+    public UserService() {
+    }
+
+    // Constructor for manual instantiation (optional if you are injecting with CDI)
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }
 
     // Register a new user
+    @Transactional
     public void registerUser(String name, String phoneNumber, User.Role role, String password) {
-        // Validate user details (basic example)
+        // Validate user details
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("User name cannot be null or empty");
         }
@@ -69,6 +78,7 @@ public class UserService {
     }
 
     // Update a user's details
+    @Transactional
     public void updateUser(int id, String name, String phoneNumber, User.Role role, String password) {
         // Retrieve the existing user
         User user = getUserById(id);
@@ -95,14 +105,14 @@ public class UserService {
     }
 
     // Delete a user by ID
+    @Transactional
     public void deleteUser(int id) {
         // Retrieve the existing user
         User user = getUserById(id);
 
         if (user != null) {
-            // Logic to remove the user (this method would need to be implemented in UserDAO)
-            // Example:
-            // userDAO.delete(user);
+            // Implement the deletion logic in UserDAO
+            userDAO.delete(user);
         } else {
             throw new IllegalArgumentException("User not found with ID: " + id);
         }
@@ -110,4 +120,3 @@ public class UserService {
 
     // Additional business logic methods can be added here
 }
-

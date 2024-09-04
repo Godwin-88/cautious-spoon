@@ -4,7 +4,6 @@
  */
 package com.mycompany.ghostnetfish.dao;
 
-
 import com.mycompany.ghostnetfish.model.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -19,7 +18,12 @@ public class UserDAOImpl implements UserDAO {
     @Transactional
     @Override
     public void save(User user) {
-        em.persist(user);
+        // Save or update the user in the database
+        if (user.getId() == 0) {
+            em.persist(user);  // New user, persist
+        } else {
+            em.merge(user);  // Existing user, update
+        }
     }
 
     @Override
@@ -38,5 +42,13 @@ public class UserDAOImpl implements UserDAO {
     public List<User> findAll() {
         return em.createQuery("SELECT u FROM User u", User.class).getResultList();
     }
-}
 
+    @Transactional
+    @Override
+    public void delete(User user) {
+        User userToDelete = em.find(User.class, user.getId());
+        if (userToDelete != null) {
+            em.remove(userToDelete);
+        }
+    }
+}

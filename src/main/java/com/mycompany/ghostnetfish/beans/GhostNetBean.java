@@ -7,6 +7,7 @@ package com.mycompany.ghostnetfish.beans;
 import com.mycompany.ghostnetfish.model.GhostNet;
 import com.mycompany.ghostnetfish.model.User;
 import com.mycompany.ghostnetfish.service.GhostNetService;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.bean.RequestScoped;
 import jakarta.faces.context.FacesContext;
@@ -21,6 +22,8 @@ public class GhostNetBean {
     private float estimatedSize;
     private GhostNet.Status status;
     private User reporter;
+    private double latitude;  // Include latitude
+    private double longitude; // Include longitude
 
     private GhostNetService ghostNetService;
 
@@ -30,19 +33,20 @@ public class GhostNetBean {
         // ghostNetService = InjectedGhostNetService;
     }
 
-    // Report a new ghost net
+    // Report a new ghost net, including latitude and longitude
     public String reportGhostNet() {
         try {
             User loggedInUser = (User) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("loggedInUser");
             if (loggedInUser != null && loggedInUser.getRole() == User.Role.REPORTER) {
-                ghostNetService.reportGhostNet(location, estimatedSize, status, loggedInUser);
+                // Corrected constructor call to include latitude and longitude
+                ghostNetService.reportGhostNet(location, estimatedSize, status, loggedInUser, latitude, longitude);
                 return "ghostNets?faces-redirect=true";  // Redirect to ghost nets page
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Only reporters can report ghost nets"));
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Only reporters can report ghost nets"));
                 return null;
             }
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage(e.getMessage()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
             return null;
         }
     }
@@ -83,5 +87,21 @@ public class GhostNetBean {
 
     public void setReporter(User reporter) {
         this.reporter = reporter;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 }

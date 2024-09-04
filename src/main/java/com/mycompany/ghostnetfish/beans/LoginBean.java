@@ -6,6 +6,7 @@ package com.mycompany.ghostnetfish.beans;
 
 import com.mycompany.ghostnetfish.model.User;
 import com.mycompany.ghostnetfish.service.UserService;
+import jakarta.faces.application.FacesMessage;
 import jakarta.faces.bean.ManagedBean;
 import jakarta.faces.bean.SessionScoped;
 import jakarta.faces.context.FacesContext;
@@ -16,6 +17,8 @@ import java.io.Serializable;
 @SessionScoped
 public class LoginBean implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private String username;
     private String password;
     private User loggedInUser;
@@ -23,26 +26,30 @@ public class LoginBean implements Serializable {
 
     // Constructor for dependency injection
     public LoginBean() {
-        // userService would typically be injected via @Inject or @EJB in a real setup
+        // Typically, userService would be injected with CDI or some DI framework.
+        // For example: @Inject private UserService userService;
     }
 
     // Authenticate the user
     public String login() {
         try {
+            // Fetch the user by username
             loggedInUser = userService.getUserByName(username);
 
             if (loggedInUser != null && loggedInUser.getPassword().equals(password)) {
-                // Check user role and redirect accordingly
+                // Check the user's role and redirect accordingly
                 if (loggedInUser.getRole() == User.Role.REPORTER) {
-                    return "reportGhostNet?faces-redirect=true";  // Reporter-specific page
+                    return "reportGhostNet?faces-redirect=true";  // Redirect for reporters
                 } else if (loggedInUser.getRole() == User.Role.RECOVERER) {
-                    return "recoverGhostNet?faces-redirect=true";  // Recoverer-specific page
+                    return "recoverGhostNet?faces-redirect=true";  // Redirect for recoverers
                 }
             } else {
-                FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Invalid login credentials"));
+                // Add an error message for invalid credentials
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Invalid login credentials", null));
             }
         } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Error during login: " + e.getMessage()));
+            // Add an error message if an exception occurs
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error during login: " + e.getMessage(), null));
         }
         return null;  // Stay on the same login page if authentication fails
     }
@@ -87,5 +94,13 @@ public class LoginBean implements Serializable {
 
     public User getLoggedInUser() {
         return loggedInUser;
+    }
+
+    public void setLoggedInUser(User loggedInUser) {
+        this.loggedInUser = loggedInUser;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

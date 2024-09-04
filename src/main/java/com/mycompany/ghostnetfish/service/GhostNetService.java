@@ -19,6 +19,10 @@ public class GhostNetService {
         this.ghostNetDAO = ghostNetDAO;
     }
 
+    public GhostNetService() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     // Register a new ghost net
     public void reportGhostNet(String location, float estimatedSize, GhostNet.Status status, User reporter, double latitude, double longitude) {
         // Validate ghost net details (basic validation)
