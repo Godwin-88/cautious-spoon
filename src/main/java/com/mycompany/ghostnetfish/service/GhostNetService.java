@@ -68,22 +68,19 @@ public class GhostNetService {
 
     // Update a ghost net's status and recoverer
     public void updateGhostNet(int id, GhostNet.Status status, User recoverer) {
-        // Retrieve the existing ghost net
-        GhostNet ghostNet = getGhostNetById(id);
+    GhostNet ghostNet = ghostNetDAO.findById(id);
 
-        // Update ghost net status
-        if (status != null) {
-            ghostNet.setStatus(status);
-        }
-
-        // Update recoverer if provided
-        if (recoverer != null) {
-            ghostNet.setRecoverer(recoverer);
-        }
-
-        // Save the updated ghost net back to the database
-        ghostNetDAO.save(ghostNet);
+    if (status != null) {
+        ghostNet.setStatus(status);
     }
+
+    if (recoverer != null) {
+        ghostNet.setRecoverer(recoverer);
+    }
+
+    ghostNetDAO.save(ghostNet);
+}
+
 
     // Additional business logic methods can be added here
 }
